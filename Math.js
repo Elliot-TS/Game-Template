@@ -50,12 +50,12 @@ for (var i = 0; i < 10000; i ++) {
  * Vector.new(x,y*,z*...) -> creates a new Vector (see above)
  * Vector.delete() -> deletes the Vector (see above)
 ****************************************************/
-var Vector = function () {
-    this.args = typeof arguments[0] === 'object' ? arguments[0] : arguments;
-    for (var i = 0; i < 3; i ++) {
-        this.defineThunk (Vector.thunk[i], i);
-    }
 
+var Vector = function (components) {
+    this.init (components);
+    if (this.x === undefined) {this.defineThunk (Vector.thunk[0], 0);}
+    if (this.y === undefined) {this.defineThunk (Vector.thunk[1], 1);}
+    if (this.z === undefined) {this.defineThunk (Vector.thunk[2], 2);}
 };
 Vector.thunk = ["x", "y", "z"];
 Vector.deleted = [];
@@ -63,7 +63,7 @@ Vector.new = function () {
     var v;
     if (Vector.deleted.length > 0) {
         v = Vector.deleted.pop();
-        v.constructor (arguments);
+        v.init (arguments);
     }
     else {
         v = new Vector(arguments);
@@ -74,15 +74,16 @@ Vector.prototype = {
     delete : function () {
         Vector.deleted.push(this);
     },
-    
+    init : function (components) {
+        this.args = typeof components[0] === "object" ? components[0] : components;
+        this.args = [this.args[0]||0,this.args[1]||0,this.args[2]||0]; // Sets x,y,z to 0 if any of them are undefined
+    },
     // Makes this.x, this.y, and this.z aliases of this.ars[0], this.args[1], and this.agrs[2]
     defineThunk : function (property, index) {
-        if (this[property] === undefined) {
-            Object.defineProperty(this, property, {
-                get : function () {return this.args[index];},
-                set : function (val) {this.args[index] = val;},
-            });
-        }
+        Object.defineProperty(this, property, {
+            get : function () {return this.args[index];},
+            set : function (val) {this.args[index] = val;},
+        });
     },
     
     // Vector functions
@@ -93,7 +94,7 @@ Vector.prototype = {
         for (i = 0; i < len; i ++) {
             this.args[i] /= mag;
         }
-        return Vector.new (this.args);
+        return this;
     },
     add : function (vector) {
         var i;
@@ -102,7 +103,7 @@ Vector.prototype = {
         for (i = 0; i < len; i++) {
             this.args[i] = (vector.args[i]||0)+(this.args[i]||0);
         }
-        return Vector.new (this.args);
+        return this;
         
         
     },
@@ -112,7 +113,7 @@ Vector.prototype = {
         for (i = 0; i < len; i++) {
             this.args[i] = (this.args[i]||0)-(vector.args[i]||0);
         }
-        return Vector.new (this.args);
+        return this;
     },
     mult : function (scalar) {
         scalar = scalar === undefined ? 1 : scalar;
@@ -121,7 +122,7 @@ Vector.prototype = {
         for (i = 0; i < len; i++) {
             this.args[i] = (scalar)*(this.args[i]);
         }
-        return Vector.new (this.args);
+        return this;
     },
     div : function (scalar) {
         scalar = scalar === undefined ? 1 : 1/scalar;
@@ -130,7 +131,7 @@ Vector.prototype = {
         for (i = 0; i < len; i++) {
             this.args[i] = (scalar)*(this.args[i]);
         }
-        return Vector.new (this.args);
+        return this;
     },
     getDot : function (vector) {
         var i;
@@ -206,7 +207,7 @@ Vector.prototype = {
     // Transforms
     rotateZ : function (thetaZ, origin) {
         // Gives origin a default value
-        origin = origin.get() || Vector.new (0,0,0);
+        origin = origin || Vector.new (0,0,0);
         
         // Defines some variables
         var nv = Vector.new(0,0,0); // New vector
@@ -220,18 +221,18 @@ Vector.prototype = {
         // Updates this vector
         this.x = nv.x;
         this.y = nv.y;
-        this.z = nv.z;
+        //this.z = nv.z;
         
         // Deletes the old vectors
         origin.delete ();
         nv.delete ();
         
         // Returns the new vector
-        return this.get();
+        return this;
     },
     rotateY : function (thetaY, origin) {
         // Gives origin a default value
-        origin = origin.get() || Vector.new (0,0,0);
+        origin = origin || Vector.new (0,0,0);
         
         // Defines some variables
         var nv = Vector.new(0,0,0); // New vector
@@ -244,7 +245,7 @@ Vector.prototype = {
         
         // Updates this vector
         this.x = nv.x;
-        this.y = nv.y;
+        //this.y = nv.y;
         this.z = nv.z;
         
         // Deletes the old vectors
@@ -252,11 +253,11 @@ Vector.prototype = {
         nv.delete ();
         
         // Returns the new vector
-        return this.get();
+        return this;
     },
     rotateX : function (thetaX, origin) {
         // Gives origin a default value
-        origin = origin.get() || Vector.new (0,0,0);
+        origin = origin || Vector.new (0,0,0);
         
         // Defines some variables
         var nv = Vector.new(0,0,0); // New vector
@@ -268,7 +269,7 @@ Vector.prototype = {
         nv.z = sine   * (this.y - origin.y) + cosine * (this.z - origin.z) + origin.z;
         
         // Updates this vector
-        this.x = nv.x;
+        //this.x = nv.x;
         this.y = nv.y;
         this.z = nv.z;
         
@@ -277,7 +278,7 @@ Vector.prototype = {
         nv.delete ();
         
         // Returns the new vector
-        return this.get();
+        return this;
     },
     
     scale : function (scaleVector, origin) {
@@ -298,7 +299,7 @@ Vector.prototype = {
         origin.delete ();
         
         // Returns the scaled Vector
-        return this.get();
+        return this;
     },
 };
 
