@@ -30,6 +30,9 @@ for (var i = 0; i < 10000; i ++) {
  * Vector.y -> the second component of the Vector
  * Vector.z -> the third component of the Vector
  * Vector.args -> an array of all the components of the Vector (args is short for arguments)
+ 
+ * Methods:
+ * Vector.unitVector() -> returns a new 4
 ****************************************************/
 var Vector = function () {
     this.args = typeof arguments[0] === 'object' ? arguments[0] : arguments;
