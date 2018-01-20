@@ -3,15 +3,14 @@
  * Vector Object Type:
  * 
  * @DOCUMENTATION:
+ 
  * Create a new Vector:
-
 var vector = Vector.new (x,y,z,...);
 // use `Vector.new` instead of `new Vector`
  * Details: If there is a slot free in the `Vector.deleted` array, recall the constructor function.  If there are no deleted vectors, return a `new Vector`
 
 
  * Delete a Vector:
-
 vector_that_is_no_longer_needed.delete ();
 // delete all vectors that are no longer being used.
 
@@ -25,14 +24,31 @@ for (var i = 0; i < 10000; i ++) {
  * Details: Clears all the attributes and push itself into the `Vector.deleted` array so that it can be reused by the `Vector.new()` function.
 
 
- * Attributes:
+ * ATTRIBUTES:
  * Vector.x -> the frist component of the Vector
  * Vector.y -> the second component of the Vector
  * Vector.z -> the third component of the Vector
  * Vector.args -> an array of all the components of the Vector (args is short for arguments)
  
- * Methods:
- * Vector.unitVector() -> returns a new 4
+ * METHODS:
+ * Vector.unitVector() -> returns a new Vector in the same direction but with the length of 1
+ * Vector.add(vector) -> adds two Vectors
+ * Vector.sub(vector) -> subtracts two Vectors
+ * Vector.mult(scalar) -> multiplies the Vector by a Scalar (number)
+ * Vector.div(scalar) -> divides the Vector by a Scalar (number)
+ * Vector.getDot(vector) -> returns the dot product of the Vector and another Vector passed as the parameter
+ * Vector.getCross(vector) -> returns the cross product of two three-dimentional Vectors
+ * Vector.getMagnatude() -> returns the magnatude or length of the vector (from the origin)
+ * Vector.get() -> returns an independent copy of the Vector
+ * Vector.getMatrix() -> NOT YET IMPLEMENTED -- returns a copy of the Vector as a Matrix object-type
+ * Vector.copy(vector) -> copies itself into `vector` (makes `vector` a copy of itself)
+ * Vector.print(new_line_type*) -> prints the Vector into the `print` console.  `new_line_type` is the string that gets printed for a new line ("\n" is default. "\t" would separate each component of the Vector with a tab)
+ * Vector.rotateZ(theta, origin*) -> rotates the Vector `theta` degrees around the Z axis around the `origin` (default is (0,0,0...))
+ * Vector.rotateY(theta, origin*) -> see previous.  Rotates around the Y axis
+ * Vector.rotateX(theta, origin*) -> see previous.  Rotates around the X axis
+ * Vector.scale(vector, origin*) -> scales the Vector around the `origin` (defalt is (0,0,0...)) by `vector`.  Multiplies each component of the vector along the coorisponding component of the scaling `vector`, also scales along the `origin`
+ * Vector.new(x,y*,z*...) -> creates a new Vector (see above)
+ * Vector.delete() -> deletes the Vector (see above)
 ****************************************************/
 var Vector = function () {
     this.args = typeof arguments[0] === 'object' ? arguments[0] : arguments;
